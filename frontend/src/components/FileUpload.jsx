@@ -1,19 +1,36 @@
-import { useState, useCallback } from 'react';
-import { Upload, FileSpreadsheet, X, Loader2 } from 'lucide-react';
+import { useState, useCallback, useEffect } from "react";
+import {
+  Upload,
+  FileSpreadsheet,
+  X,
+  Loader2,
+  Database,
+  TrendingUp,
+  Brain,
+  Sparkles,
+} from "lucide-react";
 
 export default function FileUpload({ onUpload, isUploading }) {
   const [dragActive, setDragActive] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
 
+  /* ================= SCROLL TO BOTTOM ================= */
+  useEffect(() => {
+    if (isUploading) {
+      setTimeout(() => {
+        window.scrollTo({
+          top: document.documentElement.scrollHeight,
+          behavior: "smooth",
+        });
+      }, 100);
+    }
+  }, [isUploading]);
+
+  /* ================= DRAG HANDLERS ================= */
   const handleDrag = useCallback((e) => {
     e.preventDefault();
     e.stopPropagation();
-
-    if (e.type === 'dragenter' || e.type === 'dragover') {
-      setDragActive(true);
-    } else if (e.type === 'dragleave') {
-      setDragActive(false);
-    }
+    setDragActive(e.type === "dragenter" || e.type === "dragover");
   }, []);
 
   const handleDrop = useCallback((e) => {
@@ -21,19 +38,13 @@ export default function FileUpload({ onUpload, isUploading }) {
     e.stopPropagation();
     setDragActive(false);
 
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+    if (e.dataTransfer.files?.[0]) {
       const file = e.dataTransfer.files[0];
-      if (file.type === 'text/csv' || file.name.endsWith('.csv')) {
+      if (file.type === "text/csv" || file.name.endsWith(".csv")) {
         setSelectedFile(file);
       }
     }
   }, []);
-
-  const handleFileSelect = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      setSelectedFile(e.target.files[0]);
-    }
-  };
 
   const handleUpload = async () => {
     if (!selectedFile) return;
@@ -48,102 +59,159 @@ export default function FileUpload({ onUpload, isUploading }) {
   };
 
   return (
-    <div className="w-full">
-      <div
-        onDragEnter={handleDrag}
-        onDragLeave={handleDrag}
-        onDragOver={handleDrag}
-        onDrop={handleDrop}
-        onClick={() =>
-          document.getElementById('file-input')?.click()
-        }
-        className={`cursor-pointer border-2 border-dashed rounded-xl p-10 transition
-          ${
-            dragActive
-              ? 'border-blue-500 bg-blue-50'
-              : 'border-gray-300 hover:border-gray-400'
-          }`}
-      >
-        <input
-          id="file-input"
-          type="file"
-          accept=".csv"
-          onChange={handleFileSelect}
-          className="hidden"
-        />
+    <section className="pb-24">
+      {/* ================= HERO ================= */}
+      <div className="max-w-7xl mx-auto px-6 pt-5 text-center">
+        <div className="inline-flex items-center gap-2 rounded-full bg-indigo-50 px-4 py-2 text-sm font-medium text-indigo-600">
+          <Sparkles className="h-4 w-4" />
+          AI-Powered Dataset Analysis
+        </div>
 
-        {selectedFile ? (
-          <div className="flex flex-col items-center gap-4">
-            <div className="w-16 h-16 rounded-2xl bg-blue-100 flex items-center justify-center">
-              <FileSpreadsheet className="w-8 h-8 text-blue-600" />
-            </div>
+        <h1 className="mt-6 text-4xl md:text-5xl font-bold text-gray-900">
+          Transform Data into{" "}
+          <span className="text-indigo-600">Intelligent Insights</span>
+        </h1>
 
-            <div className="text-center">
-              <p className="font-semibold">
-                {selectedFile.name}
-              </p>
-              <p className="text-sm text-gray-500">
-                {formatFileSize(selectedFile.size)}
-              </p>
-            </div>
+        <p className="mt-5 max-w-3xl mx-auto text-lg text-gray-600">
+          Upload your CSV dataset and let AI automatically detect problem types,
+          recommend the best ML models, and answer your questions.
+        </p>
 
-            <div className="flex gap-3">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setSelectedFile(null);
-                }}
-                disabled={isUploading}
-                className="px-3 py-2 text-sm border rounded-md hover:bg-gray-50 disabled:opacity-50"
-              >
-                <X className="w-4 h-4 mr-1 inline" />
-                Remove
-              </button>
-
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleUpload();
-                }}
-                disabled={isUploading}
-                className="px-4 py-2 text-sm bg-black text-white rounded-md hover:bg-gray-800 disabled:opacity-50"
-              >
-                {isUploading ? (
-                  <>
-                    <Loader2 className="w-4 h-4 mr-2 inline animate-spin" />
-                    Uploading...
-                  </>
-                ) : (
-                  <>
-                    <Upload className="w-4 h-4 mr-2 inline" />
-                    Analyze Dataset
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
-        ) : (
-          <div className="flex flex-col items-center gap-4 text-center">
-            <div className="w-20 h-20 rounded-full bg-blue-100 flex items-center justify-center">
-              <Upload className="w-10 h-10 text-blue-600" />
-            </div>
-
-            <div>
-              <p className="text-lg font-semibold">
-                Drop your CSV file here
-              </p>
-              <p className="text-sm text-gray-500 mt-1">
-                or click to browse
-              </p>
-            </div>
-
-            <div className="flex items-center gap-2 px-4 py-2 rounded-full bg-gray-100 text-sm text-gray-600">
-              <FileSpreadsheet className="w-4 h-4" />
-              Supports .csv files up to 20MB
-            </div>
-          </div>
-        )}
+        {/* ================= FEATURES ================= */}
+        <div className="mt-14 grid gap-6 md:grid-cols-3">
+          <FeatureCard
+            icon={<Database className="h-6 w-6 text-indigo-600" />}
+            title="Smart Analysis"
+            text="Automatic problem type detection, data quality checks, and feature importance analysis."
+            bg="bg-indigo-50"
+          />
+          <FeatureCard
+            icon={<TrendingUp className="h-6 w-6 text-emerald-600" />}
+            title="Model Selection"
+            text="Get recommendations for the best ML models with expected metrics and implementation tips."
+            bg="bg-emerald-50"
+          />
+          <FeatureCard
+            icon={<Brain className="h-6 w-6 text-green-600" />}
+            title="AI Chat"
+            text="Ask questions about your data and get intelligent, context-aware answers instantly."
+            bg="bg-green-50"
+          />
+        </div>
       </div>
+
+      {/* ================= UPLOAD BOX ================= */}
+      <div className="max-w-5xl mx-auto px-6 mt-16">
+        <div
+          onDragEnter={handleDrag}
+          onDragLeave={handleDrag}
+          onDragOver={handleDrag}
+          onDrop={handleDrop}
+          onClick={() => document.getElementById("file-input")?.click()}
+          className={`cursor-pointer rounded-2xl border-2 border-dashed p-14 text-center transition
+            ${
+              dragActive
+                ? "border-indigo-500 bg-indigo-50"
+                : "border-gray-300 bg-gray-50 hover:border-gray-400"
+            }`}
+        >
+          <input
+            id="file-input"
+            type="file"
+            accept=".csv"
+            onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+            className="hidden"
+          />
+
+          {selectedFile ? (
+            <div className="flex flex-col items-center gap-5">
+              <div className="h-16 w-16 rounded-2xl bg-indigo-100 flex items-center justify-center">
+                <FileSpreadsheet className="h-8 w-8 text-indigo-600" />
+              </div>
+
+              <div>
+                <p className="font-medium">{selectedFile.name}</p>
+                <p className="text-sm text-gray-500">
+                  {formatFileSize(selectedFile.size)}
+                </p>
+              </div>
+
+              <div className="flex gap-3">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setSelectedFile(null);
+                  }}
+                  className="rounded-md border px-4 py-2 text-sm hover:bg-gray-100"
+                >
+                  <X className="h-4 w-4 inline mr-1" />
+                  Remove
+                </button>
+
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleUpload();
+                  }}
+                  disabled={isUploading}
+                  className="
+                    rounded-md bg-black px-5 py-2 text-sm text-white
+                    hover:bg-gray-800 transition
+                    disabled:opacity-60 disabled:cursor-not-allowed
+                  "
+                >
+                  {isUploading ? (
+                    <>
+                      <Loader2 className="h-4 w-4 inline mr-2 animate-spin" />
+                      Uploading
+                    </>
+                  ) : (
+                    <>
+                      <Upload className="h-4 w-4 inline mr-2" />
+                      Analyze Dataset
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="flex flex-col items-center gap-6">
+              <div className="h-20 w-20 rounded-full bg-indigo-100 flex items-center justify-center">
+                <Upload className="h-10 w-10 text-indigo-600" />
+              </div>
+
+              <div>
+                <p className="text-lg font-semibold">
+                  Upload your CSV dataset
+                </p>
+                <p className="mt-1 text-sm text-gray-500">
+                  Drag & drop your file here, or click to browse
+                </p>
+              </div>
+
+              <div className="inline-flex items-center gap-2 rounded-full border bg-white px-4 py-2 text-sm text-gray-600">
+                <FileSpreadsheet className="h-4 w-4" />
+                CSV files up to 20MB
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ================= FEATURE CARD ================= */
+function FeatureCard({ icon, title, text, bg }) {
+  return (
+    <div className="rounded-2xl border bg-white p-8 text-center shadow-sm hover:shadow-md transition">
+      <div
+        className={`mx-auto mb-5 flex h-12 w-12 items-center justify-center rounded-xl ${bg}`}
+      >
+        {icon}
+      </div>
+      <h3 className="text-lg font-semibold">{title}</h3>
+      <p className="mt-2 text-sm text-gray-600 leading-relaxed">{text}</p>
     </div>
   );
 }
