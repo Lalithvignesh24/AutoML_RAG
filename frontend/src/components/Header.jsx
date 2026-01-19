@@ -22,7 +22,7 @@ export default function Header() {
         {/* Nav */}
         <nav className="flex items-center gap-4">
           <a
-            href="https://github.com"
+            href="https://github.com/Lalithvignesh24/AutoML_RAG"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center px-3 py-2 text-sm rounded-md hover:bg-gray-100 transition"

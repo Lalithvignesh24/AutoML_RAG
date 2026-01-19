@@ -61,11 +61,7 @@ export default function FileUpload({ onUpload, isUploading }) {
   }
 };
 
-  // const handleUpload = async () => {
-  //   if (!selectedFile) return;
-  //   await onUpload(selectedFile, targetColumn.trim());
-  //   setSelectedFile(null);
-  // };
+
 
   const formatFileSize = (bytes) => {
     if (bytes < 1024) return `${bytes} B`;
@@ -164,34 +160,54 @@ export default function FileUpload({ onUpload, isUploading }) {
                 </button>
 
                 <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleUploadClick();
-                  }}
-                  disabled={isUploading|| !selectedFile}
-                  className="
-                    rounded-md bg-black px-5 py-2 text-sm text-white
-                    hover:bg-gray-800 transition
-                    disabled:opacity-60 disabled:cursor-not-allowed
-                  "
-                >
-                  {/* {isUploading ? (
-                    <>
-                      <Loader2 className="h-4 w-4 inline mr-2 animate-spin" />
-                      Uploading
-                    </>
-                  ) : (
-                    <>
-                      <Upload className="h-4 w-4 inline mr-2" />
-                      Analyze Dataset
-                    </>
-                  )} */}
-                  {isUploading ? (
-    <><Loader2 className="mr-2 animate-spin" /> Analyzing...</>
-  ) : (
-    <><Upload className="mr-2" /> Analyze Dataset</>
-  )}
-                </button>
+  onClick={(e) => {
+    e.stopPropagation();
+    handleUploadClick();
+  }}
+  disabled={isUploading || !selectedFile}
+  className="
+    group relative inline-flex items-center justify-center gap-2
+    rounded-lg px-6 py-2.5 text-sm font-semibold
+    text-white
+    bg-gradient-to-r from-black to-gray-900
+    shadow-md
+    transition-all duration-200 ease-out
+
+    hover:shadow-lg hover:scale-[1.02]
+    active:scale-[0.98]
+
+    focus:outline-none focus:ring-2 focus:ring-black/40
+
+    disabled:opacity-50 disabled:cursor-not-allowed
+    disabled:scale-100 disabled:shadow-none
+  "
+>
+  {/* Glow */}
+  <span
+    className="
+      absolute inset-0 rounded-lg
+      bg-gradient-to-r from-indigo-500/30 to-purple-500/30
+      opacity-0 blur-md transition
+      group-hover:opacity-100
+      disabled:hidden
+    "
+  />
+
+  {/* Content */}
+  <span className="relative flex items-center gap-2">
+    {isUploading ? (
+      <>
+        <Loader2 size={16} className="animate-spin" />
+        Analyzing…
+      </>
+    ) : (
+      <>
+        <Upload size={16} />
+        Analyze Dataset
+      </>
+    )}
+  </span>
+</button>
               </div>
             </div>
           ) : (
@@ -216,31 +232,52 @@ export default function FileUpload({ onUpload, isUploading }) {
             </div>
           )}
         </div>
-<div className="mt-6 max-w-md mx-auto space-y-2">
-  <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
-    <Target size={16} className="text-indigo-500" />
-    Target Column Name
+<div className="mt-8 max-w-md mx-auto">
+  {/* Label */}
+  <label className="mb-1.5 flex items-center gap-2 text-sm font-semibold text-gray-800">
+    <Target size={16} className="text-indigo-600" />
+    Target Column
   </label>
-  
-  <div className="relative">
+
+  {/* Input wrapper */}
+  <div className="relative group">
+    {/* Glow */}
+    <div className="absolute -inset-0.5 rounded-lg bg-gradient-to-r from-indigo-500/20 to-purple-500/20 opacity-0 blur transition group-focus-within:opacity-100" />
+
     <input
       type="text"
-      placeholder="e.g. price, label, outcome"
+      placeholder="price, label, outcome…"
       value={targetColumn}
       onChange={(e) => setTargetColumn(e.target.value)}
-      className="w-full rounded-md border-gray-300 pl-4 pr-10 py-2.5 text-sm 
-                 shadow-sm transition-shadow focus:ring-2 focus:ring-indigo-500 
-                 focus:border-indigo-500 placeholder:text-gray-400"
+      className="
+        relative w-full rounded-lg border border-gray-300 bg-white
+        px-4 py-3 text-sm text-gray-900
+        shadow-sm outline-none
+        transition-all duration-200
+        focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30
+        placeholder:text-gray-400
+      "
     />
-    <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none">
-       <Info size={14} className="text-gray-300" />
+
+    {/* Info icon */}
+    <div className="absolute inset-y-0 right-3 flex items-center">
+      <Info
+        size={15}
+        className="text-gray-400 hover:text-indigo-500 transition-colors cursor-help"
+        title="Column used as output/label for training"
+      />
     </div>
   </div>
-  
-  <p className="text-[11px] text-gray-400 flex items-center gap-1">
-    <span className="font-medium text-indigo-600">Pro tip:</span> 
-    Auto-detection works best with labeled datasets.
-  </p>
+
+  {/* Helper text */}
+  <div className="mt-2 flex items-start gap-2 rounded-md bg-indigo-50 px-3 py-2 text-[12px] text-indigo-700">
+    <span className="font-semibold">Tip</span>
+    <span className="leading-snug">
+      Auto-detection works best when your dataset has a clearly labeled output
+      column (e.g., <code className="font-mono">label</code> or{" "}
+      <code className="font-mono">target</code>).
+    </span>
+  </div>
 </div>
       </div>
     </section>

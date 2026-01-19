@@ -108,10 +108,7 @@ useEffect(() => {
         </div>
 
         <div className="flex gap-3">
-          <button className="flex items-center px-3 py-2 border rounded-md text-sm hover:bg-gray-50">
-            <Download className="w-4 h-4 mr-2" />
-            Export Report
-          </button>
+         
 
           {ragStatus === 'ready' ? (
             <button
